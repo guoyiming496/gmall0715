@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -20,16 +21,34 @@ public class ManageServiceImpl implements ManageService {
     private BaseCatalog1Mapper baseCatalog1Mapper;
 
     @Autowired
-    private BaseCatalog2Mapper  baseCatalog2Mapper;
+    private BaseCatalog2Mapper baseCatalog2Mapper;
 
     @Autowired
-    private BaseCatalog3Mapper  baseCatalog3Mapper;
+    private BaseCatalog3Mapper baseCatalog3Mapper;
 
     @Autowired
     private BaseAttrInfoMapper baseAttrInfoMapper;
 
     @Autowired
     private BaseAttrValueMapper baseAttrValueMapper;
+
+    @Autowired
+    private SpuInfoMapper spuInfoMapper;
+
+    @Resource
+    private BaseSaleAttrMapper baseSaleAttrMapper;
+
+    @Autowired
+    private SpuImageMapper spuImageMapper;
+
+    @Autowired
+    private SpuSaleAttrMapper spuSaleAttrMapper;
+
+    @Autowired
+
+   private  SpuSaleAttrValueMapper spuSaleAttrValueMapper;
+
+
     @Override
     public List<BaseCatalog1> getCatalog1() {
         return baseCatalog1Mapper.selectAll();
@@ -62,11 +81,11 @@ public class ManageServiceImpl implements ManageService {
     @Transactional
     public void saveAttrInfo(BaseAttrInfo baseAttrInfo) {
         //baseAttrInfo  baseAttrValue
-      //判斷是否为空
-        if(baseAttrInfo.getId() != null && baseAttrInfo.getId().length()>0){
+        //判斷是否为空
+        if (baseAttrInfo.getId() != null && baseAttrInfo.getId().length() > 0) {
             //修改
             baseAttrInfoMapper.updateByPrimaryKeySelective(baseAttrInfo);
-        }else {
+        } else {
             //直接保存平台属性
             baseAttrInfoMapper.insertSelective(baseAttrInfo);
         }
@@ -78,15 +97,15 @@ public class ManageServiceImpl implements ManageService {
         baseAttrValueMapper.delete(baseAttrValue1);
 
 
-         //保存平台属性值
+        //保存平台属性值
         List<BaseAttrValue> attrValueList = baseAttrInfo.getAttrValueList();
         //判断集合不为空！
         //先判断对象不为空 然后再判断集合长度
-        if(attrValueList != null && attrValueList.size()>0){
+        if (attrValueList != null && attrValueList.size() > 0) {
             for (BaseAttrValue baseAttrValue : attrValueList) {
                 baseAttrValue.setAttrId(baseAttrInfo.getId());//获取当前对象主键自增值
                 //保存值到数据库
-                 baseAttrValueMapper.insertSelective(baseAttrValue);
+                baseAttrValueMapper.insertSelective(baseAttrValue);
             }
         }
     }
@@ -100,9 +119,59 @@ public class ManageServiceImpl implements ManageService {
 
     @Override
     public BaseAttrInfo getBaseAttrInfo(String attrId) {
-       BaseAttrInfo baseAttrInfo =  baseAttrInfoMapper.selectByPrimaryKey(attrId);
+        BaseAttrInfo baseAttrInfo = baseAttrInfoMapper.selectByPrimaryKey(attrId);
         //查询平台属性值集合
         baseAttrInfo.setAttrValueList(getAttrValueList(attrId));
         return baseAttrInfo;
+    }
+
+    @Override
+    public List<SpuInfo> getSpuInfoList(String catalog3Id) {
+        SpuInfo spuInfo = new SpuInfo();
+        spuInfo.setCatalog3Id(catalog3Id);
+        return spuInfoMapper.select(spuInfo);
+    }
+
+    @Override
+    public List<BaseSaleAttr> getBaseSaleAttrList() {
+        return baseSaleAttrMapper.selectAll();
+    }
+
+    @Override
+    @Transactional
+    public void saveSpuInfo(SpuInfo spuInfo) {
+ /*
+            spuInfo
+            spuImage
+            spuSaleAttr
+            spuSaleAttrValue
+         */
+        spuInfoMapper.insertSelective(spuInfo);
+        // spuImage
+        List<SpuImage> spuImageList = spuInfo.getSpuImageList();
+        if (spuImageList!=null && spuImageList.size()>0){
+            for (SpuImage spuImage : spuImageList) {
+                // 赋值spuId
+                spuImage.setSpuId(spuInfo.getId());
+                spuImageMapper.insertSelective(spuImage);
+            }
+        }
+        // 销售属性
+        List<SpuSaleAttr> spuSaleAttrList = spuInfo.getSpuSaleAttrList();
+        if (spuSaleAttrList!=null && spuSaleAttrList.size()>0){
+            for (SpuSaleAttr spuSaleAttr : spuSaleAttrList) {
+                spuSaleAttr.setSpuId(spuInfo.getId());
+                spuSaleAttrMapper.insertSelective(spuSaleAttr);
+
+                // 销售属性值
+                List<SpuSaleAttrValue> spuSaleAttrValueList = spuSaleAttr.getSpuSaleAttrValueList();
+                if (spuSaleAttrValueList!=null && spuSaleAttrValueList.size()>0){
+                    for (SpuSaleAttrValue spuSaleAttrValue : spuSaleAttrValueList) {
+                        spuSaleAttrValue.setSpuId(spuInfo.getId());
+                        spuSaleAttrValueMapper.insertSelective(spuSaleAttrValue);
+                    }
+                }
+            }
+        }
     }
 }
