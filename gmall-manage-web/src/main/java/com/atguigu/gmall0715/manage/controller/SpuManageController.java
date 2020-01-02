@@ -2,6 +2,7 @@ package com.atguigu.gmall0715.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.gamll0715.bean.BaseSaleAttr;
+import com.atguigu.gamll0715.bean.SpuImage;
 import com.atguigu.gamll0715.bean.SpuInfo;
 import com.atguigu.gmall0715.service.ManageService;
 import org.springframework.web.bind.annotation.*;
@@ -33,4 +34,8 @@ public class SpuManageController {
     public  void saveSpuInfo(@RequestBody SpuInfo spuInfo){
         manageService.saveSpuInfo(spuInfo);
     }
+
+
+
+
 }
