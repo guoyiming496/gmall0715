@@ -2,9 +2,13 @@ package com.atguigu.gmall0715.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.gamll0715.bean.SkuInfo;
+import com.atguigu.gamll0715.bean.SkuLsInfo;
 import com.atguigu.gamll0715.bean.SpuImage;
 import com.atguigu.gamll0715.bean.SpuSaleAttr;
+import com.atguigu.gmall0715.service.ListService;
 import com.atguigu.gmall0715.service.ManageService;
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +20,8 @@ import java.util.List;
 @RestController
 @CrossOrigin
 public class SkuManageController {
+    @Reference
+    private ListService listService;
 
     @Reference
     private ManageService manageService;
@@ -38,5 +44,16 @@ public class SkuManageController {
     @RequestMapping("saveSkuInfo")
     public void saveSkuInfo(@RequestBody SkuInfo skuInfo){
         manageService.saveSkuInfo(skuInfo);
+    }
+
+    @RequestMapping("onSale")
+    public  void onSale(String skuId){
+        //商品上架
+        SkuLsInfo skuLsInfo = new SkuLsInfo();
+        //给skuLsinfo 初始化赋值
+        //根据skuId查询skuinfo
+        SkuInfo skuInfo = manageService.getSkuInfo(skuId);
+        BeanUtils.copyProperties(skuInfo,skuLsInfo);
+        listService.saveSkuInfo(skuLsInfo);
     }
 }
