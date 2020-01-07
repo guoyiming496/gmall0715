@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.atguigu.gamll0715.bean.SkuInfo;
 import com.atguigu.gamll0715.bean.SkuSaleAttrValue;
 import com.atguigu.gamll0715.bean.SpuSaleAttr;
+import com.atguigu.gmall0715.service.ListService;
 import com.atguigu.gmall0715.service.ManageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,12 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by lbin8521 on 2020/1/2.
- */
 @Controller
 public class ItemController {
-  /*
+
+    /*
     @RequestMapping("{skuId}.html")
     public String item(@PathVariable String skuId){
         SkuInfo skuInfo = manageService.getSkuInfo(skuId);
@@ -31,6 +30,9 @@ public class ItemController {
 
     @Reference
     private ManageService manageService;
+
+    @Reference
+    private ListService listService;
 
     @RequestMapping("{skuId}.html")
     public String item(@PathVariable String skuId, HttpServletRequest request){
@@ -73,6 +75,7 @@ public class ItemController {
                     key="";
                 }
             }
+
         }
 
         // 将map 转换json
@@ -83,6 +86,8 @@ public class ItemController {
         request.setAttribute("spuSaleAttrList",spuSaleAttrList);
         // 保存skuInfo
         request.setAttribute("skuInfo",skuInfo);
+        // 记录热度排名
+        listService.incrHotScore(skuId);
         /*返回商品详情页面*/
         return "item";
     }

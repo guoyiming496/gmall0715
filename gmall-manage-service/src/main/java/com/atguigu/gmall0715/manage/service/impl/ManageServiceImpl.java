@@ -339,4 +339,33 @@ public class ManageServiceImpl implements ManageService {
     public List<SkuSaleAttrValue> getSkuSaleAttrValueListBySpu(String spuId) {
         return skuSaleAttrValueMapper.selectSkuSaleAttrValueListBySpu(spuId);
     }
+
+    @Override
+    public List<BaseAttrInfo> getAttrInfoList(List<String> attrValueIdList) {
+        // 调用mapper：
+        // SELECT * FROM  base_attr_info bai INNER  JOIN base_attr_value bav ON bai.id=bav.attr_id WHERE bav.id in (83,120,13);
+        /*
+         方案：
+         1：attrValueIdList
+            应该在xxxMapper.xml
+                使用mybatis 中的动态标签库！<foreach item="" collection=>
+
+                <select id="selectPostIn" resultType="domain.blog.Post">
+                 SELECT * FROM  base_attr_info bai INNER  JOIN base_attr_value bav ON bai.id=bav.attr_id WHERE bav.id in
+                  <foreach item="item" index="index" collection="list"
+                      open="(" separator="," close=")">
+                        #{item} (83,120,13);
+                  </foreach>
+                </select>
+
+         2：83,120,13
+            SELECT * FROM  base_attr_info bai INNER  JOIN base_attr_value bav ON bai.id=bav.attr_id WHERE bav.id in (83,120,13);
+          */
+        // 将集合变成字符串！
+        String attrValueIds  = org.apache.commons.lang3.StringUtils.join(attrValueIdList.toArray(), ",");
+        System.out.println(attrValueIds+"传入的字符串");
+        return baseAttrInfoMapper.selectAttrInfoListByIds(attrValueIds);
+
+
+    }
 }
