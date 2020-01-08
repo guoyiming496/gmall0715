@@ -1,4 +1,4 @@
-package com.atguigu.gmall0715.item;
+package com.atguigu.gmall0715.passport;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.atguigu.gmall0715")
-public class GmallItemWebApplication {
+public class GmallPassportWebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GmallItemWebApplication.class, args);
+        SpringApplication.run(GmallPassportWebApplication.class, args);
     }
 
 }

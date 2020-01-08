@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.atguigu.gamll0715.bean.SkuInfo;
 import com.atguigu.gamll0715.bean.SkuSaleAttrValue;
 import com.atguigu.gamll0715.bean.SpuSaleAttr;
+import com.atguigu.gmall0715.config.LoginRequire;
 import com.atguigu.gmall0715.service.ListService;
 import com.atguigu.gmall0715.service.ManageService;
 import org.springframework.stereotype.Controller;
@@ -35,6 +36,7 @@ public class ItemController {
     private ListService listService;
 
     @RequestMapping("{skuId}.html")
+    @LoginRequire
     public String item(@PathVariable String skuId, HttpServletRequest request){
         // 获取skuId
         System.out.println(skuId);
