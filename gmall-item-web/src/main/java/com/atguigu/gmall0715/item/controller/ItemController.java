@@ -36,7 +36,7 @@ public class ItemController {
     private ListService listService;
 
     @RequestMapping("{skuId}.html")
-    @LoginRequire
+
     public String item(@PathVariable String skuId, HttpServletRequest request){
         // 获取skuId
         System.out.println(skuId);
