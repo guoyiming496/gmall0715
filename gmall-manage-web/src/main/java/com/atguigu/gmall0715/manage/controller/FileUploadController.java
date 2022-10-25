@@ -33,7 +33,7 @@ public class FileUploadController {
             String configFile  = this.getClass().getResource("/tracker.conf").getFile();
             ClientGlobal.init(configFile);
             TrackerClient trackerClient=new TrackerClient();
-            TrackerServer trackerServer=trackerClient.getConnection();
+            TrackerServer trackerServer=trackerClient.getTrackerServer();
             StorageClient storageClient=new StorageClient(trackerServer,null);
             String originalFilename = file.getOriginalFilename(); // zly.jpg
 
